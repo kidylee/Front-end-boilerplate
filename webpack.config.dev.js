@@ -6,15 +6,17 @@ module.exports = {
   devtool: 'eval',
   entry: {
     vendor:[ 
-    'eventsource-polyfill',
-    'webpack-hot-middleware/client',
-    'jquery',
-    'lodash',
-    'react-dom',
-    'react',
-    'babel-preset-react-hmre',
-    'react-redux',
-    'redux',
+      'eventsource-polyfill',
+      'webpack-hot-middleware/client',
+      'jquery',
+      'lodash',
+      'react-dom',
+      'react',
+      'babel-preset-react-hmre',
+      'react-redux',
+      'redux',
+      'bootstrap-loader',
+      'font-awesome-sass-loader!./config/font-awesome-sass.config.js'
      ],
      app: './src/index'
   },
@@ -28,8 +30,9 @@ module.exports = {
     new webpack.NoErrorsPlugin(),
     new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.bundle.js', Infinity),
     new webpack.ProvidePlugin({
-      '$': 'jquery',
-      '_': 'lodash'
+      $: 'jquery',
+      jQuery: 'jquery',
+      _: 'lodash'
     })
   ],
   module: {
@@ -40,6 +43,10 @@ module.exports = {
       test: /\.js$/,
       loaders: ['babel'],
       include: path.join(__dirname, 'src')
-    }]
+    },
+    { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url-loader?limit=10000&mimetype=application/font-woff' },
+    { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'file-loader' }
+
+    ]
   }
 };
