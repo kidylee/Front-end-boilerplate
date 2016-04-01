@@ -3,25 +3,39 @@ var webpack = require('webpack');
 
 module.exports = {
   // or devtool: 'eval' to debug issues with compiled output:
-  devtool: 'cheap-module-eval-source-map',
-  entry: [
-    // necessary for hot reloading with IE:
+  devtool: 'eval',
+  entry: {
+    vendor:[ 
     'eventsource-polyfill',
-    // listen to code updates emitted by hot middleware:
     'webpack-hot-middleware/client',
-    // your code:
-    './src/index'
-  ],
+    'jquery',
+    'lodash',
+    'react-dom',
+    'react',
+    'babel-preset-react-hmre',
+    'react-redux',
+    'redux',
+     ],
+     app: './src/index'
+  },
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: 'bundle.js',
+    filename: '[name].bundle.js',
     publicPath: '/dist/'
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin()
+    new webpack.NoErrorsPlugin(),
+    new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.bundle.js', Infinity),
+    new webpack.ProvidePlugin({
+      '$': 'jquery',
+      '_': 'lodash'
+    })
   ],
   module: {
+    preLoaders: [
+      {test: /\.js$/, loader: 'eslint-loader', exclude: /node_modules/}
+    ],
     loaders: [{
       test: /\.js$/,
       loaders: ['babel'],
