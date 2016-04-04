@@ -16,7 +16,8 @@ module.exports = {
       'react-redux',
       'redux',
       'bootstrap-loader',
-      'font-awesome-sass-loader!./config/font-awesome-sass.config.js'
+      'font-awesome-sass-loader!./config/font-awesome-sass.config.js',
+      'react-grid-layout'
      ],
      app: './src/index'
   },
@@ -36,17 +37,20 @@ module.exports = {
     })
   ],
   module: {
+    noParse: [
+      /plotly\.js/
+    ],
     preLoaders: [
       {test: /\.js$/, loader: 'eslint-loader', exclude: /node_modules/}
     ],
-    loaders: [{
-      test: /\.js$/,
-      loaders: ['babel'],
-      include: path.join(__dirname, 'src')
-    },
-    { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url-loader?limit=10000&mimetype=application/font-woff' },
-    { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'file-loader' }
-
+    loaders: [
+      {
+        test: /\.js$/,
+        loaders: ['babel'],
+        include: path.join(__dirname, 'src')
+      },
+      { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url-loader?limit=10000&mimetype=application/font-woff' },
+      { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'file-loader' }
     ]
   }
 };
