@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
-import ReactDom from 'react-dom'
-import Plotly from './PlotlyComponent';
+import ReactDOM from 'react-dom'
+import PlotlyComponent from './PlotlyComponent';
 import { autoLayoutReady } from '../actions'
 import { connect } from 'react-redux';
+import  Plotly from 'plotly.js';
+
 var ReactGridLayout = require('react-grid-layout');
 
 require('style!css!../style/main.css');
@@ -61,8 +63,9 @@ class Grid extends Component {
     };
 
   	return (
-  		
-		    <Plotly className="whatever" data={data} layout={layout} config={config}/>
+  		<div key={'a'} ref='a'>
+		    <PlotlyComponent className="whatever" data={data} layout={layout} config={config}/>
+      </div>
 		
   	);
   }
@@ -75,8 +78,9 @@ class Grid extends Component {
     ];
 
     return (
-      <ReactGridLayout onResize={(...args)=>{ console.log(args[4]);  }} className="layout" layout={layout} cols={12} rowHeight={30} width={1200}>
-        <div key={'a'} >{this.generateDom()}</div>
+      <ReactGridLayout onResize={ this.props.onResize } onResizeStart={ this.props.onResize }
+         onResizeEnd={ this.props.onResize }  className="layout" layout={layout} cols={12} rowHeight={30} width={1200}>
+        {this.generateDom()}
         <div key={'b'}>b</div>
         <div key={'c'}>c</div>
       </ReactGridLayout>
@@ -86,10 +90,27 @@ class Grid extends Component {
 	
 }
 
+const mapStateToProps = (state, ownPros) => {
+
+  return {
+     id
+  }
+}
+
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onLoad: () => {
       dispatch(autoLayoutReady())
+    },
+    onResize: () => {
+      // console.log(ReactDOM.findDOMNode(this.refs.a));
+      const resizing = $('.resizing');
+
+      let update = {
+        height: resizing.attr('height'),
+        width: resizing.attr('width')
+      }
+      Plotly.relayout($('.whatever')[0], update);
     }
   }
 }
