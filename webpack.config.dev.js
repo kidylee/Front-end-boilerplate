@@ -3,10 +3,9 @@ var webpack = require('webpack');
 
 module.exports = {
   // or devtool: 'eval' to debug issues with compiled output:
-  devtool: 'eval',
+  devtool: 'cheap-source-map',
   entry: {
     vendor:[ 
-      'eventsource-polyfill',
       'webpack-hot-middleware/client',
       'jquery',
       'lodash',
@@ -16,7 +15,11 @@ module.exports = {
       'react-redux',
       'redux',
       'bootstrap-loader',
-      'font-awesome-sass-loader!./config/font-awesome-sass.config.js'
+      'font-awesome-sass-loader!./config/font-awesome-sass.config.js',
+      'classnames',
+      'plotly.js'
+
+
      ],
      app: './src/index'
   },
@@ -36,6 +39,9 @@ module.exports = {
     })
   ],
   module: {
+    noParse: [
+      /plotly\.js/
+    ],
     preLoaders: [
       {test: /\.js$/, loader: 'eslint-loader', exclude: /node_modules/}
     ],
