@@ -1,21 +1,12 @@
-/*
-State shape:
-{	
-
-	autoLayoutItems: [
-		autolayoutitem
-	]
-}
-
-
-
-*/
-
-
 import { combineReducers } from 'redux'
 import autolayoutItems from './autolayoutItems'
 
 
+
+const autoLayout = (state, action) => {
+  console.log(state);
+  return state;
+}
 
 const autoLayoutReady = (state=false, action) => {
   switch (action.type){
@@ -28,10 +19,11 @@ const autoLayoutReady = (state=false, action) => {
 
 
 
-const rootReducer = combineReducers({
-  autoLayoutReady,
-  autolayoutItems
-});
+const rootReducer = autoLayout;
+// combineReducers({
+//   autoLayoutReady,
+//   autolayoutItems
+// });
 
 
 

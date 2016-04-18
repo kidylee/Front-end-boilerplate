@@ -5,7 +5,7 @@ import  Plotly from 'plotly.js';
 import { connect } from 'react-redux';
 
 
-export default class PlotlyComponent extends Component {
+class PlotlyComponent extends Component {
 
 
   constructor(props){
@@ -13,7 +13,7 @@ export default class PlotlyComponent extends Component {
     this.displayName = 'Plotly';
 
   }
-  
+
   handleResize(){
     let update = {
         height: this.container.offsetHeight,
@@ -22,6 +22,11 @@ export default class PlotlyComponent extends Component {
       Plotly.relayout(this.container, update);
   }
 
+  handleLayoutChange(){
+
+    Plotly.Plots.resize(this.container);
+
+  }
   shouldComponentUpdate(nextProps) {
     //TODO logic for detecting change in props
     return true;
@@ -29,7 +34,47 @@ export default class PlotlyComponent extends Component {
 
 
   plotRender(){
-    let {data, layout, config} = this.props;
+
+
+    // let {data, layout, config} = this.props;
+
+
+
+     let data = [
+      {
+        type: 'scatter',
+        x: [1, 2, 3],
+        y: [6, 2, 3],
+        marker: {
+          color: 'rgb(16, 32, 77)'
+        }
+      },
+      {
+        type: 'bar',
+        x: [1, 2, 3],
+        y: [6, 2, 3],
+        name: 'bar chart example'
+      }
+    ];
+    let layout = {
+      title: 'simple example',
+      xaxis: {
+        title: 'time'
+      },
+      annotations: [
+        {
+          text: 'simple annotation',
+          x: 0,
+          xref: 'paper',
+          y: 0,
+          yref: 'paper'
+        }
+      ]
+    };
+    let config = {
+      showLink: false,
+      displayModeBar: true
+    };
 
     layout.height = this.container.parentElement.offsetHeight;
     layout.width = this.container.parentElement.offsetWidth;
@@ -48,7 +93,6 @@ export default class PlotlyComponent extends Component {
   }
 
   componentDidMount() {
-    window.container = this.props.container;
     this.plotRender();
   }
 
@@ -86,3 +130,23 @@ PlotlyComponent.propTypes = {
   };
 
 
+const mapStateToProps = (state, ownPros) => {
+
+  let id = ownPros.id;
+  let item =  _.find(state.autoLayout.layout, { i: id})
+  console.log(item);
+
+  return {
+     item
+  }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+
+    }
+
+}
+
+
+export default connect(mapStateToProps,null, null , {withRef : true } )(PlotlyComponent)

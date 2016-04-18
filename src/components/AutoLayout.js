@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import PlotlyComponent from './PlotlyComponent';
-import { autoLayoutReady } from '../actions'
+import { autoLayoutInit } from '../actions'
 import { connect } from 'react-redux';
-import  Plotly from 'plotly.js';
 
 var ReactGridLayout = require('react-grid-layout');
 
@@ -17,65 +16,30 @@ class Grid extends Component {
 
   constructor(props) {
     super(props);
-    
-  } 
- 
-  componentDidMount(){
 
-  	this.props.onLoad();
-    this.props.onResize();
   }
 
-  generateDom(){
-  	let data = [
-      {
-        type: 'scatter',  
-        x: [1, 2, 3],     
-        y: [6, 2, 3],     
-        marker: {         
-          color: 'rgb(16, 32, 77)' 
-        }
-      },
-      {
-        type: 'bar',      
-        x: [1, 2, 3],     
-        y: [6, 2, 3],     
-        name: 'bar chart example' 
-      }
-    ];
-    let layout = {                     
-      title: 'simple example',  
-      xaxis: {                  
-        title: 'time'         
-      },
-      annotations: [             
-        {
-          text: 'simple annotation',    
-          x: 0,                         
-          xref: 'paper',                
-          y: 0,                         
-          yref: 'paper'                 
-        }
-      ]
-    };
-    let config = {
-      showLink: false,
-      displayModeBar: true
-    };
+  componentDidMount(){
 
-  	return (
-  		<div key={'a'} >
-		    <PlotlyComponent className="whatever" data={data} layout={layout} config={config} ref={ 'a' }/>
-      </div>
-		
-  	);
+
+  }
+
+  generateDom(item){
+
+
+    switch(item['type']){
+      case 'PLOTLY':
+        return ( <PlotlyComponent className="whatever" id={ item['i'] } ref={ item['i'] }/> );
+      default:
+        return item['i'];
+    }
+
   }
 
   handleResize(...args){
-      
 
-      if(this.refs[args[2]['i']] && this.refs[args[2]['i']].handleResize){
-        this.refs[args[2]['i']].handleResize();
+      if(args[2] && args[2]['i'] && this.refs[args[2]['i']] && this.refs[args[2]['i']].getWrappedInstance().handleResize){
+        this.refs[args[2]['i']].getWrappedInstance().handleResize();
       }
   }
 
@@ -88,36 +52,32 @@ class Grid extends Component {
   }
 
   render(){
-      var layout = [
-      {i: 'a', x: 0, y: 0, w: 8, h: 6},
-      {i: 'b', x: 1, y: 0, w: 3, h: 2, minW: 2, maxW: 4},
-      {i: 'c', x: 4, y: 0, w: 1, h: 2}
-    ];
+
 
     return (
       <ReactGridLayout onResize={ this.handleResize.bind(this) } onResizeStart={ this.handleResize.bind(this) } onLayoutChange={this.handleLayoutChange.bind(this)}
-         onResizeStop={ this.handleResize.bind(this)  }  className="layout" layout={layout} cols={12} rowHeight={30} width={1200}>
-        {this.generateDom()}
-        <div key={'b'}>b</div>
-        <div key={'c'}>c</div>
+         onResizeStop={ this.handleResize.bind(this)  }  className="layout" {...this.props.config}>
+          { this.props.config.layout.map((item) =>{
+              return <div key={ item['i'] }> { this.generateDom(item) } </div>
+            })
+          }
       </ReactGridLayout>
     )
-    
+
   }
-	
+
 }
 
 const mapStateToProps = (state, ownPros) => {
-
   return {
-     
+     config: state.autoLayout
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onLoad: () => {
-      dispatch(autoLayoutReady())
+    layoutInit: () => {
+      dispatch(autoLayoutInit())
     },
     onResize: () => {
       console.log(this);
@@ -134,7 +94,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 }
 
 const AutoLayout = connect(
-  undefined,
+  mapStateToProps,
   mapDispatchToProps
 )(Grid)
 
