@@ -2,7 +2,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import rootReducer from '../reducers';
 
 // Middleware you want to use in production:
-const enhancer = applyMiddleware(p1, p2, p3);
+const enhancer = applyMiddleware();
 
 export default function configureStore(initialState) {
   // Note: only Redux >= 3.1.0 supports passing enhancer as third argument.

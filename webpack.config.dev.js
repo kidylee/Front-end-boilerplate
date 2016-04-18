@@ -35,8 +35,7 @@ module.exports = {
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery',
-      _: 'lodash',
-      Plotly: 'plotly'
+      _: 'lodash'
     })
   ],
   module: {
