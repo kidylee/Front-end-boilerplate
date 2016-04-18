@@ -23,6 +23,7 @@ class Grid extends Component {
   componentDidMount(){
 
   	this.props.onLoad();
+    this.props.onResize();
   }
 
   generateDom(){
@@ -63,11 +64,27 @@ class Grid extends Component {
     };
 
   	return (
-  		<div key={'a'} ref='a'>
-		    <PlotlyComponent className="whatever" data={data} layout={layout} config={config}/>
+  		<div key={'a'} >
+		    <PlotlyComponent className="whatever" data={data} layout={layout} config={config} ref={ 'a' }/>
       </div>
 		
   	);
+  }
+
+  handleResize(...args){
+      
+
+      if(this.refs[args[2]['i']] && this.refs[args[2]['i']].handleResize){
+        this.refs[args[2]['i']].handleResize();
+      }
+  }
+
+  handleLayoutChange(){
+    _.map(this.refs,(item) => {
+      if(item.handleLayoutChange){
+        item.handleLayoutChange();
+      }
+    });
   }
 
   render(){
@@ -78,8 +95,8 @@ class Grid extends Component {
     ];
 
     return (
-      <ReactGridLayout onResize={ this.props.onResize } onResizeStart={ this.props.onResize }
-         onResizeEnd={ this.props.onResize }  className="layout" layout={layout} cols={12} rowHeight={30} width={1200}>
+      <ReactGridLayout onResize={ this.handleResize.bind(this) } onResizeStart={ this.handleResize.bind(this) } onLayoutChange={this.handleLayoutChange.bind(this)}
+         onResizeStop={ this.handleResize.bind(this)  }  className="layout" layout={layout} cols={12} rowHeight={30} width={1200}>
         {this.generateDom()}
         <div key={'b'}>b</div>
         <div key={'c'}>c</div>
@@ -93,7 +110,7 @@ class Grid extends Component {
 const mapStateToProps = (state, ownPros) => {
 
   return {
-     id
+     
   }
 }
 
@@ -103,14 +120,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(autoLayoutReady())
     },
     onResize: () => {
+      console.log(this);
       // console.log(ReactDOM.findDOMNode(this.refs.a));
-      const resizing = $('.resizing');
+      // const resizing = $('.resizing');
 
-      let update = {
-        height: resizing.attr('height'),
-        width: resizing.attr('width')
-      }
-      Plotly.relayout($('.whatever')[0], update);
+      // let update = {
+      //   height: resizing.attr('height'),
+      //   width: resizing.attr('width')
+      // }
+      // Plotly.relayout($('.whatever')[0], update);
     }
   }
 }
