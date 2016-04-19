@@ -5,6 +5,9 @@ import  Plotly from 'plotly.js';
 import { connect } from 'react-redux';
 
 
+    window.Plotly = Plotly;
+
+
 class PlotlyComponent extends Component {
 
 
@@ -24,8 +27,19 @@ class PlotlyComponent extends Component {
 
   handleLayoutChange(){
 
-    Plotly.Plots.resize(this.container);
+    if(this.plotted){
 
+      _.defer(()=> { 
+        let update = {
+          height: this.container.parentElement.offsetHeight - 2,
+          width: this.container.parentElement.offsetWidth - 2
+        }
+        Plotly.relayout(this.container, update);
+      });
+    }else{
+      this.plotRender();
+      this.plotted = true;
+    }
   }
   shouldComponentUpdate(nextProps) {
     //TODO logic for detecting change in props
@@ -36,49 +50,16 @@ class PlotlyComponent extends Component {
   plotRender(){
 
 
-    // let {data, layout, config} = this.props;
+    let {data, layout, config} = this.props;
 
 
 
-     let data = [
-      {
-        type: 'scatter',
-        x: [1, 2, 3],
-        y: [6, 2, 3],
-        marker: {
-          color: 'rgb(16, 32, 77)'
-        }
-      },
-      {
-        type: 'bar',
-        x: [1, 2, 3],
-        y: [6, 2, 3],
-        name: 'bar chart example'
-      }
-    ];
-    let layout = {
-      title: 'simple example',
-      xaxis: {
-        title: 'time'
-      },
-      annotations: [
-        {
-          text: 'simple annotation',
-          x: 0,
-          xref: 'paper',
-          y: 0,
-          yref: 'paper'
-        }
-      ]
-    };
-    let config = {
-      showLink: false,
-      displayModeBar: true
-    };
+     
 
-    layout.height = this.container.parentElement.offsetHeight;
-    layout.width = this.container.parentElement.offsetWidth;
+    layout['height'] = this.container.parentElement.offsetHeight - 2;
+    layout['width'] = this.container.parentElement.offsetWidth - 2;
 
+    console.log(layout);
     Plotly.plot(this.container, data, layout, config);
     // if (this.props.onClick)
     //   this.container.on('plotly_click', this.props.onClick);
@@ -93,7 +74,6 @@ class PlotlyComponent extends Component {
   }
 
   componentDidMount() {
-    this.plotRender();
   }
 
   componentDidUpdate() {
@@ -134,10 +114,46 @@ const mapStateToProps = (state, ownPros) => {
 
   let id = ownPros.id;
   let item =  _.find(state.autoLayout.layout, { i: id})
-  console.log(item);
 
   return {
-     item
+     item,
+     data : [
+      {
+        type: 'scatter',
+        x: [1, 2, 3],
+        y: [6, 2, 3],
+        marker: {
+          color: 'rgb(16, 32, 77)'
+        }
+      },
+      {
+        type: 'bar',
+        x: [1, 2, 3],
+        y: [6, 2, 3],
+        name: 'bar chart example'
+      }
+    ],
+    layout: {
+      title: 'simple example',
+      showlegend: false,
+      xaxis: {
+        title: 'time'
+      },
+      annotations: [
+        {
+          text: 'simple annotation',
+          x: 0,
+          xref: 'paper',
+          y: 0,
+          yref: 'paper'
+        }
+      ]
+    },
+    config: {
+      showLink: false,
+      displayModeBar: true,
+      displaylogo: false
+    }
   }
 }
 

@@ -45,8 +45,8 @@ class Grid extends Component {
 
   handleLayoutChange(){
     _.map(this.refs,(item) => {
-      if(item.handleLayoutChange){
-        item.handleLayoutChange();
+      if(item.getWrappedInstance().handleLayoutChange){
+        item.getWrappedInstance().handleLayoutChange();
       }
     });
   }
@@ -80,7 +80,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(autoLayoutInit())
     },
     onResize: () => {
-      console.log(this);
       // console.log(ReactDOM.findDOMNode(this.refs.a));
       // const resizing = $('.resizing');
 

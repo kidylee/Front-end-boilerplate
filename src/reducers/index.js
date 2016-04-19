@@ -4,7 +4,6 @@ import autolayoutItems from './autolayoutItems'
 
 
 const autoLayout = (state, action) => {
-  console.log(state);
   return state;
 }
 
